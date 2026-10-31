@@ -11,7 +11,7 @@ export const asset = (path) => `${base}/${path}`;
 
 const branchImageUrl = (branch, file) => {
   if (!branch || !file) return undefined;
-  return `/assets/images/branches/${branch}/${encodeURIComponent(file).replace(/%2F/g, '/')}`;
+  return `/assets/images/branches/${branch}/${encodeURIComponent(file).replace(/%2F/g, '/').replace(/%2C/g, ',')}`;
 };
 
 const branchImageEntries = branchManifest.map(({ branch, file }) => ({
@@ -42,6 +42,16 @@ const preferredBranchCovers = {
   adriatico: 'IMG_1856.JPG',
   mabini: 'IMG_1855.JPG',
   modesto: 'IMG_1873.PNG',
+  quirino: 'lv_0_20260918024826.jpg',
+};
+
+export const branchBrandMedia = {
+  quirino: {
+    logos: [
+      { src: branchImageUrl('quirino', 'atlantic-banner-light.jpg'), variant: 'light', alt: "Pacific Seaman's Inn" },
+      { src: branchImageUrl('quirino', 'atlantic-banner-dark.jpg'), variant: 'dark', alt: "Pacific Seaman's Inn" },
+    ],
+  },
 };
 
 const branchFallbackImage = branchImage('mabini', 'IMG_1858.JPG') || allBranchImages[0]?.src;
@@ -94,10 +104,55 @@ export const branches = [
   {
     name: 'Quirino (Upcoming)',
     id: 'quirino',
-    address: 'N/A',
-    phone: 'N/A',
-    email: 'N/A',
+    address: 'Quirino Ave., Malate, Manila, Philippines, 1004',
+    phone: '0938 887 3634',
+    email: 'postrano.lyssa@yahoo.com',
     upcoming: true,
+  },
+];
+
+export const businesses = [
+  {
+    id: 'seaman-loan',
+    title: 'Seaman Loan',
+    category: 'Finance',
+    description: 'Quick and practical loan assistance for seafarers who need support between contracts or before joining a vessel.',
+    image: '/assets/images/businesses/seaman-loan.jpg',
+  },
+  {
+    id: 'house-design',
+    title: 'House Design',
+    category: 'Construction',
+    description: 'Home and layout planning for seafarers building or renovating a house for family life on land.',
+    image: '/assets/images/businesses/house-design.jpg',
+  },
+  {
+    id: 'cargo-forwarding',
+    title: 'Cargo Forwarding',
+    category: 'Logistics',
+    description: 'Help sending balikbayan boxes and personal cargo from Manila to your home province.',
+    image: '/assets/images/businesses/cargo-forwarding.jpg',
+  },
+  {
+    id: 'seafarer-insurance',
+    title: 'Seafarer Insurance',
+    category: 'Protection',
+    description: 'Dummy coverage options for medical, travel, and family protection while you are onboard.',
+    image: '/assets/images/businesses/seafarer-insurance.jpg',
+  },
+  {
+    id: 'training-review',
+    title: 'Training Review Center',
+    category: 'Education',
+    description: 'Dummy review programs for TESDA, STCW, and promotion exams while staying in Manila.',
+    image: '/assets/images/businesses/training-review.jpg',
+  },
+  {
+    id: 'document-assistance',
+    title: 'Document Assistance',
+    category: 'Services',
+    description: 'Dummy help with SIRB, medical, visa, and agency paperwork before your next contract.',
+    image: '/assets/images/businesses/document-assistance.jpg',
   },
 ];
 

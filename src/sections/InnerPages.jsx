@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ArrowForward,
   Bed,
@@ -28,8 +28,9 @@ import {
   Typography,
 } from '@mui/material';
 import { NewsCard } from '../components/Cards';
-import { allBranchImages, branchCoverImage, branchImage, branchImages, branches, news } from '../data';
-import { Footer, RoomsSection, useSectionReveal } from './HomeSections';
+import { apiGet } from '../config/api';
+import { allBranchImages, branchBrandMedia, branchCoverImage, branchImage, branchImages, branches, news } from '../data';
+import { BranchesSection, Footer, RoomsSection, useSectionReveal } from './HomeSections';
 
 const pageQuestions = [
   ['Which room is best for my stay?', 'Our bedspaces are ideal for budget-friendly stays, while solo and couple rooms offer more privacy. Tell us your dates and we can help you choose.'],
@@ -54,6 +55,7 @@ const branchHeroImages = {
   adriatico: branchImage('adriatico', 'att.YTB-Sgbii_L3Pd_mxzUgZgeoJC4jWwsf5rIMZuVKFj0.jpg'),
   mabini: branchImage('mabini', 'att.fLV3Xu7Df6ulQJCjrr1eRFdo8HLUNZ5TADmJL9V7zJQ.jpg'),
   modesto: branchImage('modesto', 'att.tOvtWZR2-bzq0JF7IM4nqYUDBB9km3aV-BwdtJ07q1g.jpg'),
+  quirino: branchImage('quirino', 'lv_0_20260918024826.jpg'),
 };
 
 function PageHero({ title, image, imageFit = 'contain' }) {
@@ -121,36 +123,205 @@ function BranchDetails({ address, phone, email }) {
   return <Stack className="branch-details" spacing={1.5}><Box className="branch-contact-row"><LocationOnOutlined /><Typography><strong>Address</strong>{address}</Typography></Box>{phone && <Box className="branch-contact-row"><PhoneOutlined /><Typography><strong>Phone</strong>{phone === 'N/A' ? phone : <a href={`tel:${phone.replaceAll(' ', '')}`}>{phone}</a>}</Typography></Box>}{email && <Box className="branch-contact-row"><MailOutline /><Typography><strong>Email</strong>{email === 'N/A' ? email : <a href={`mailto:${email}`}>{email}</a>}</Typography></Box>}</Stack>;
 }
 
-const branchDirectoryImages = {
-  adriatico: branchImage('adriatico', 'att.DAC1lnKLHrePnHR5XXFvKBypmkoJEx-RfCTBVUYtP5A.jpg'),
-  mabini: branchImage('mabini', 'att.lYP7WYjrhaveChbuakn-9BjEH9s2-EgchObs346xl_s.jpg'),
-  modesto: branchImage('modesto', 'att.6Dafppv7gfbEaRqfZWvNORtXwOoj1rVAaoHOIr7RAxg.jpg'),
-  quirino: branchImage('quirino', 'ChatGPT Image Aug 17, 2026, 11_08_46 AM.png'),
-};
-
 function BranchesPage() {
-  return <InnerPage><PageHero title="Branches" imageFit="cover" /><section className="section branches-section" data-scroll-section><Container className="site-container"><Box className="branches-intro"><Box><Typography className="eyebrow">Find your stay</Typography><Typography component="h2" className="section-title">Three locations, one welcoming stay</Typography><Typography className="section-description">Choose the Atlantic Seaman's Dormitory branch that puts you closest to the places you want to explore in Manila.</Typography></Box><Typography className="branches-count">03<br /><span>branches</span></Typography></Box><Box className="branches-grid">{branches.map(({ name, id, address, phone, email }, index) => <Card className="branch-card" id={id} key={id}><Box className="branch-card-image"><img src={branchDirectoryImages[id] || branchCoverImage(id, index)} alt={`${name} branch accommodation`} /></Box><CardContent><Box className="branch-card-heading"><Typography component="h2" className="section-title">{name}</Typography><span className="branch-card-number">/{String(index + 1).padStart(2, '0')}</span></Box><BranchDetails address={address} phone={phone} email={email} /><Button variant="contained" href={`/branch/${id}`} endIcon={<ArrowForward />} sx={{ mt: 3 }}>View branch</Button></CardContent></Card>)}</Box><Box className="branches-map-layout"><Box className="branches-map-copy"><Typography className="eyebrow">Explore the area</Typography><Typography component="h2" className="section-title">Stay close to Manila</Typography><Typography className="section-description">Our branches are located around the Malate and Ermita area, close to the city’s energy, dining, and transport links.</Typography><Button href="/contacts" className="text-action" endIcon={<ArrowForward />}>Get in touch</Button></Box><Box className="branches-map-card"><iframe title="Atlantic Seaman's Dormitory branches map" src="https://www.google.com/maps?q=Malate+Manila+Philippines&output=embed" loading="lazy" /></Box></Box></Container></section></InnerPage>;
+  return (
+    <InnerPage>
+      <PageHero title="Branches" imageFit="cover" />
+      <BranchesSection action="" />
+    </InnerPage>
+  );
+}
+
+function formatBranchRate(amount) {
+  return `₱${Number(amount).toLocaleString('en-PH', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
+
+function BranchRatesCard({ branchId }) {
+  const [roomRates, setRoomRates] = useState([]);
+  const [walkinRates, setWalkinRates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadRates() {
+      setLoading(true);
+      setError('');
+
+      try {
+        const response = await apiGet(`/api/public/branches/${branchId}/rates`);
+        if (!active) return;
+
+        setRoomRates(response.data?.room_rates || []);
+        setWalkinRates(response.data?.walkin_rates || []);
+      } catch (loadError) {
+        if (active) {
+          setError(loadError.message || 'Unable to load branch rates.');
+          setRoomRates([]);
+          setWalkinRates([]);
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadRates();
+
+    return () => {
+      active = false;
+    };
+  }, [branchId]);
+
+  return (
+    <Box className="branch-rates-card">
+      <Box className="branch-rates-heading">
+        <Box>
+          <Typography className="eyebrow">Room rates</Typography>
+          <Typography component="h3" className="branch-rates-title">Current prices</Typography>
+        </Box>
+        <Button href="/reserve" className="branch-rates-cta" endIcon={<ArrowForward />}>
+          Reserve
+        </Button>
+      </Box>
+
+      {loading && <Typography className="branch-rates-empty">Loading rates...</Typography>}
+      {!loading && error && <Typography className="branch-rates-empty">{error}</Typography>}
+      {!loading && !error && !roomRates.length && !walkinRates.length && (
+        <Typography className="branch-rates-empty">No published rates for this branch yet.</Typography>
+      )}
+
+      {!loading && !error && Boolean(roomRates.length) && (
+        <Box className="branch-rates-list">
+          {roomRates.map((rate) => (
+            <Box className="branch-rate-item" key={`${rate.type}-${rate.amount}`}>
+              <Box>
+                <Typography className="branch-rate-type">{rate.type === 'bedspace' ? 'Daily stay' : 'Private stay'}</Typography>
+                <Typography className="branch-rate-name">{rate.name}</Typography>
+              </Box>
+              <Typography className="branch-rate-amount">
+                {formatBranchRate(rate.amount)}
+                <span>/ {rate.unit}</span>
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      )}
+
+      {!loading && !error && Boolean(walkinRates.length) && (
+        <Box className="branch-rates-group">
+          <Typography className="branch-rates-subtitle">Walk-in packages</Typography>
+          <Box className="branch-rates-list">
+            {walkinRates.map((rate) => (
+              <Box className="branch-rate-item" key={`${rate.name}-${rate.amount}`}>
+                <Box>
+                  <Typography className="branch-rate-type">Hourly</Typography>
+                  <Typography className="branch-rate-name">{rate.name}</Typography>
+                </Box>
+                <Typography className="branch-rate-amount">
+                  {formatBranchRate(rate.amount)}
+                  <span>/ {rate.unit}</span>
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      )}
+    </Box>
+  );
+}
+
+function hideBrokenImage(file, setFailedImages) {
+  setFailedImages((current) => {
+    if (current.has(file)) return current;
+    const next = new Set(current);
+    next.add(file);
+    return next;
+  });
 }
 
 function BranchPage({ branch }) {
   const [visibleCount, setVisibleCount] = useState(6);
   const [activeImage, setActiveImage] = useState(null);
+  const [failedImages, setFailedImages] = useState(() => new Set());
   const coverImage = branchCoverImage(branch.id);
+  const brandMedia = branchBrandMedia[branch.id];
   const branchGalleryImages = (branchImages[branch.id] || [])
     .filter(({ src }) => src !== coverImage)
     .map(({ src, file }) => ({ src, file }));
-  const galleryImages = [{ src: coverImage, file: 'branch-cover' }, ...branchGalleryImages];
+  const galleryImages = [{ src: coverImage, file: 'branch-cover' }, ...branchGalleryImages]
+    .filter(({ file }) => !failedImages.has(file));
   const visibleGalleryImages = galleryImages.slice(0, visibleCount);
   const hasMoreImages = visibleCount < galleryImages.length;
 
-  return <InnerPage><PageHero title={`${branch.name} Branch`} image={branchHeroImages[branch.id]} imageFit={branchHeroImages[branch.id] ? 'cover' : undefined} /><section className="section branch-detail-section" data-scroll-section><Container className="site-container branch-detail-layout"><Box className="branch-detail-copy"><Typography className="eyebrow">Atlantic Seaman's Dormitory branch</Typography><Typography component="h2" className="section-title">{branch.name}</Typography><Typography className="section-description">Contact the {branch.name} branch for reservations and local information.</Typography><BranchDetails address={branch.address} phone={branch.phone} email={branch.email} /><Button variant="contained" href="/branches" endIcon={<ArrowForward />} sx={{ mt: 4 }}>View all branches</Button></Box><Box className="branch-detail-visual"><Box className="branch-detail-gallery">{visibleGalleryImages.map(({ src, file }, index) => <button type="button" className="branch-gallery-item" onClick={() => setActiveImage(src)} aria-label={`View ${branch.name} branch photo`} key={file}><img src={src} alt={`${branch.name} branch interior`} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" /></button>)}</Box>{hasMoreImages && <Box className="branch-gallery-actions"><Button type="button" variant="outlined" className="branch-gallery-load-more" onClick={() => setVisibleCount((current) => Math.min(current + 6, galleryImages.length))}>Load more <span>({galleryImages.length - visibleCount} remaining)</span></Button></Box>}<Box className="branch-detail-map"><iframe title={`${branch.name} branch map`} src={`https://www.google.com/maps?q=${encodeURIComponent(branch.address)}&output=embed`} loading="lazy" /></Box></Box></Container></section><Dialog open={Boolean(activeImage)} onClose={() => setActiveImage(null)} maxWidth="xl" className="gallery-dialog"><DialogContent>{activeImage && <img src={activeImage} alt={`${branch.name} branch interior`} />}</DialogContent></Dialog></InnerPage>;
+  return (
+    <InnerPage>
+      <PageHero title={`${branch.name} Branch`} image={branchHeroImages[branch.id]} imageFit={branchHeroImages[branch.id] ? 'cover' : undefined} />
+      <section className="section branch-detail-section" data-scroll-section>
+        <Container className="site-container branch-detail-layout">
+          <Box className="branch-detail-copy">
+            <Typography className="eyebrow">{branch.id === 'quirino' ? "Pacific Seaman's Inn" : "Atlantic Seaman's Dormitory branch"}</Typography>
+            <Typography component="h2" className="section-title">{branch.name}</Typography>
+            <Typography className="section-description">
+              {branch.id === 'quirino'
+                ? "Our upcoming Pacific Seaman's Inn at Quirino. Browse the latest interiors and brand marks below."
+                : `Contact the ${branch.name} branch for reservations and local information.`}
+            </Typography>
+            <BranchDetails address={branch.address} phone={branch.phone} email={branch.email} />
+            <Button variant="contained" href="/branches" endIcon={<ArrowForward />} sx={{ mt: 4 }}>
+              View all branches
+            </Button>
+          </Box>
+          <Box className="branch-detail-visual">
+            {brandMedia?.logos?.length > 0 && (
+              <Box className="branch-brand-logos">
+                {brandMedia.logos.map((logo) => (
+                  <Box className={`branch-brand-logo is-${logo.variant}`} key={logo.variant}>
+                    <img src={logo.src} alt={logo.alt} />
+                  </Box>
+                ))}
+              </Box>
+            )}
+            <Box className="branch-detail-gallery">
+              {visibleGalleryImages.map(({ src, file }, index) => (
+                <button type="button" className="branch-gallery-item" onClick={() => setActiveImage(src)} aria-label={`View ${branch.name} branch photo`} key={file}>
+                  <img src={src} alt={`${branch.name} branch interior`} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" onError={() => hideBrokenImage(file, setFailedImages)} />
+                </button>
+              ))}
+            </Box>
+            {hasMoreImages && (
+              <Box className="branch-gallery-actions">
+                <Button type="button" variant="outlined" className="branch-gallery-load-more" onClick={() => setVisibleCount((current) => Math.min(current + 6, galleryImages.length))}>
+                  Load more <span>({galleryImages.length - visibleCount} remaining)</span>
+                </Button>
+              </Box>
+            )}
+            <BranchRatesCard branchId={branch.id} />
+            <Box className="branch-detail-map">
+              <iframe title={`${branch.name} branch map`} src={`https://www.google.com/maps?q=${encodeURIComponent(branch.address)}&output=embed`} loading="lazy" />
+            </Box>
+          </Box>
+        </Container>
+      </section>
+      <Dialog open={Boolean(activeImage)} onClose={() => setActiveImage(null)} maxWidth="xl" className="gallery-dialog">
+        <DialogContent>{activeImage && <img src={activeImage} alt={`${branch.name} branch interior`} />}</DialogContent>
+      </Dialog>
+    </InnerPage>
+  );
 }
 
 function GalleryPage() {
   const [filter, setFilter] = useState('All');
   const [activeImage, setActiveImage] = useState(null);
+  const [failedImages, setFailedImages] = useState(() => new Set());
   const filters = ['All', 'Adriatico', 'Mabini', 'Modesto'];
-  const visibleImages = filter === 'All' ? allBranchImages : (branchImages[filter.toLowerCase()] || []);
+  const visibleImages = (filter === 'All' ? allBranchImages : (branchImages[filter.toLowerCase()] || []))
+    .filter(({ branch, file }) => !failedImages.has(`${branch}/${file}`));
   return (
     <InnerPage>
       <PageHero title="Gallery" />
@@ -165,7 +336,7 @@ function GalleryPage() {
           <Box className="gallery-page-grid">
             {visibleImages.map(({ src, branch, file }) => (
               <Box component="button" type="button" className="gallery-page-item" onClick={() => setActiveImage(src)} key={`${branch}/${file}`}>
-                <img src={src} alt={`${branch} branch accommodation`} loading="lazy" />
+                <img src={src} alt={`${branch} branch accommodation`} loading="lazy" onError={() => hideBrokenImage(`${branch}/${file}`, setFailedImages)} />
                 <span><ArrowForward /></span>
               </Box>
             ))}

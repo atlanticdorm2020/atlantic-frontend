@@ -19,16 +19,13 @@ import {
   Twitter,
   Wifi,
   WhatsApp,
-  DirectionsBus,
-  AccessTime,
-  Person,
   LocationOn,
 } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, CardMedia, Container, Dialog, DialogContent, IconButton, Stack, Typography } from '@mui/material';
 import BookingForm from '../components/BookingForm';
 import SectionHeader from '../components/SectionHeader';
-import { NewsCard, RoomCard } from '../components/Cards';
-import { branchImage, featuredBranchImages, gallery, news, reviews, rooms } from '../data';
+import { BranchCard, BusinessCard, NewsCard, RoomCard } from '../components/Cards';
+import { branchCoverImage, branches, branchImage, businesses, featuredBranchImages, gallery, news, reviews, rooms } from '../data';
 import logo from '../assets/images/logo/logo.png';
 
 export function useSectionReveal() {
@@ -60,12 +57,7 @@ function HeroSection() {
   const heroSlides = featuredBranchImages;
   const heroImage = heroSlides[0]?.src;
 
-  const features = [
-    { icon: <LocationOn />, text: 'Malate, Manila' },
-    { icon: <DirectionsBus />, text: 'Near Quirino LRT Station' },
-    { icon: <AccessTime />, text: 'Open 24/7' },
-    { icon: <Person />, text: 'Made for Seafarers' },
-  ];
+  const bannerBranches = branches.filter((branch) => branch.address && branch.address !== 'N/A');
 
   return (
     <section className="hero-section-new" data-scroll-section>
@@ -83,11 +75,14 @@ function HeroSection() {
           <Typography className="hero-description-new">
             Affordable, clean and convenient accommodation for Filipino seafarers in the heart of Manila.
           </Typography>
-          <Box className="hero-features">
-            {features.map((feature, index) => (
-              <Box className="hero-feature-item" key={index}>
-                <span className="hero-feature-icon">{feature.icon}</span>
-                <Typography className="hero-feature-text">{feature.text}</Typography>
+          <Box className="hero-branch-addresses">
+            {bannerBranches.map((branch) => (
+              <Box className="hero-branch-address" key={branch.id}>
+                <span className="hero-branch-address-icon"><LocationOn /></span>
+                <Box>
+                  <Typography className="hero-branch-address-name">{branch.name}</Typography>
+                  <Typography className="hero-branch-address-text">{branch.address}</Typography>
+                </Box>
               </Box>
             ))}
           </Box>
@@ -95,6 +90,37 @@ function HeroSection() {
             <Button href="/rooms" className="hero-cta-primary">CHECK ROOM RATES</Button>
             <Button href="/contacts" className="hero-cta-secondary">RESERVE A BED</Button>
           </Box>
+        </Box>
+      </Container>
+    </section>
+  );
+}
+
+export function BranchesSection({ action = 'View all branches', actionHref = '/branches' }) {
+  const branchCards = branches.map((branch) => ({
+    ...branch,
+    image: branchCoverImage(branch.id),
+  }));
+
+  return (
+    <section className="section section-block rooms-section branches-section" id="branches" data-scroll-section>
+      <Container className="site-container">
+        <SectionHeader title="Our branches" action={action} href={actionHref} />
+        <Box className="rooms-grid homepage-branches-grid">
+          {branchCards.map((branch) => <BranchCard key={branch.id} branch={branch} />)}
+        </Box>
+      </Container>
+    </section>
+  );
+}
+
+function BusinessesSection() {
+  return (
+    <section className="section section-block rooms-section businesses-section" id="businesses" data-scroll-section>
+      <Container className="site-container">
+        <SectionHeader title="Our businesses" action="Contact us" href="/contacts" />
+        <Box className="rooms-grid">
+          {businesses.map((business) => <BusinessCard key={business.id} business={business} />)}
         </Box>
       </Container>
     </section>
@@ -322,5 +348,5 @@ export function Footer() {
 
 export default function HomeSections() {
   useSectionReveal();
-  return <><HeroSection /><RoomsSection /><AboutSection /><RatingsSection /><ReviewsSection /><PromoSection /><GallerySection /><NewsSection /><ContactsSection /><Footer /></>;
+  return <><HeroSection /><BranchesSection /><BusinessesSection /><AboutSection /><RatingsSection /><ReviewsSection /><PromoSection /><GallerySection /><NewsSection /><ContactsSection /><Footer /></>;
 }
