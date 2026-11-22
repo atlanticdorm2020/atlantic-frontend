@@ -319,7 +319,9 @@ function GalleryPage() {
   const [filter, setFilter] = useState('All');
   const [activeImage, setActiveImage] = useState(null);
   const [failedImages, setFailedImages] = useState(() => new Set());
-  const filters = ['All', 'Adriatico', 'Mabini', 'Modesto'];
+  const filters = ['All', ...branches.map((branch) => (
+    branch.id.charAt(0).toUpperCase() + branch.id.slice(1)
+  ))];
   const visibleImages = (filter === 'All' ? allBranchImages : (branchImages[filter.toLowerCase()] || []))
     .filter(({ branch, file }) => !failedImages.has(`${branch}/${file}`));
   return (

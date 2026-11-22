@@ -25,6 +25,7 @@ import {
   Typography,
 } from '@mui/material';
 import { apiDelete, apiGet, apiPost, apiPut } from '../../config/api';
+import BranchBadge from './BranchBadge';
 import {
   buildOptionLabel,
   formatDateTime,
@@ -114,6 +115,16 @@ function renderCellValue(column, item) {
     return <span className="dashboard-datetime-cell">{formatDateTime(value)}</span>;
   }
 
+  if (column.type === 'branch') {
+    return (
+      <BranchBadge
+        name={value}
+        color={column.getColor?.(item)}
+        textColor={column.getTextColor?.(item)}
+      />
+    );
+  }
+
   return value ?? '—';
 }
 
@@ -197,6 +208,33 @@ function CustomerCredentialsDialog({
 }
 
 function ResourceFormField({ field, form, errors, optionSets, onChange }) {
+  if (field.type === 'color') {
+    const colorValue = form[field.name] || '#64748B';
+
+    return (
+      <Box className="dashboard-color-field">
+        <Typography className="dashboard-color-field-label">{field.label}</Typography>
+        <Stack direction="row" spacing={1.5} alignItems="center">
+          <input
+            type="color"
+            aria-label={field.label}
+            className="dashboard-color-input"
+            value={colorValue}
+            onChange={(event) => onChange(field.name, event.target.value.toUpperCase())}
+          />
+          <TextField
+            label="Hex color"
+            value={colorValue}
+            onChange={(event) => onChange(field.name, event.target.value.toUpperCase())}
+            error={Boolean(errors[field.name])}
+            helperText={errors[field.name]?.[0] || 'Used on monitoring tables and check-in records.'}
+            fullWidth
+          />
+        </Stack>
+      </Box>
+    );
+  }
+
   return (
     <TextField
       label={field.label}

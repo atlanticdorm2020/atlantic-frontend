@@ -18,9 +18,11 @@ import {
   Typography,
 } from '@mui/material';
 import { apiGet } from '../../config/api';
+import { formatDate, formatDateTimeNumeric, manilaToday } from '../../config/resources';
+import BranchBadge from './BranchBadge';
 
 function todayInputValue() {
-  return new Date().toLocaleDateString('en-CA');
+  return manilaToday();
 }
 
 function formatMoney(value) {
@@ -33,22 +35,11 @@ function formatMoney(value) {
 }
 
 function formatDateTime(value) {
-  if (!value) return '—';
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return String(value);
-
-  const pad = (part) => String(part).padStart(2, '0');
-
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  return formatDateTimeNumeric(value);
 }
 
 function formatDisplayDate(value) {
-  return new Date(`${value}T00:00:00`).toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  return formatDate(value);
 }
 
 function buildPanelTitle(dateStart, dateEnd) {
@@ -332,6 +323,8 @@ export default function WalkInTransactionDetailsPanel({ refreshKey = 0 }) {
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
+                  <TableCell>Branch</TableCell>
+                  <TableCell>Receptionist</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell align="right">Hour</TableCell>
                   <TableCell align="right">Amount</TableCell>
@@ -342,6 +335,14 @@ export default function WalkInTransactionDetailsPanel({ refreshKey = 0 }) {
                 {items.map((item) => (
                   <TableRow hover key={item.id}>
                     <TableCell className="dashboard-tx-guest-name">{item.customer_name ?? '—'}</TableCell>
+                    <TableCell>
+                      <BranchBadge
+                        name={item.location_name}
+                        color={item.branch_color}
+                        textColor={item.branch_color_text}
+                      />
+                    </TableCell>
+                    <TableCell>{item.receptionist_name || '—'}</TableCell>
                     <TableCell>
                       <span className={`dashboard-tx-detail-status is-status-${item.status}`}>
                         {item.status_label ?? '—'}

@@ -24,6 +24,8 @@ import {
   Typography,
 } from '@mui/material';
 import { apiGet, apiPost, apiPut } from '../../config/api';
+import { formatDateTimeNumeric } from '../../config/resources';
+import BranchBadge from './BranchBadge';
 import WalkInTransactionDialog from './WalkInTransactionDialog';
 
 function formatMoney(value) {
@@ -36,14 +38,7 @@ function formatMoney(value) {
 }
 
 function formatDateTime(value) {
-  if (!value) return '—';
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return String(value);
-
-  const pad = (part) => String(part).padStart(2, '0');
-
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  return formatDateTimeNumeric(value);
 }
 
 function formatCustomerName(name) {
@@ -369,6 +364,8 @@ export default function WalkInTransactionsPanel({ refreshKey = 0, onStatsChange 
                   <TableRow>
                     <TableCell>ID</TableCell>
                     <TableCell>Customer</TableCell>
+                    <TableCell>Branch</TableCell>
+                    <TableCell>Receptionist</TableCell>
                     <TableCell>Room</TableCell>
                     <TableCell>Type</TableCell>
                     <TableCell align="right">Hours</TableCell>
@@ -385,6 +382,14 @@ export default function WalkInTransactionsPanel({ refreshKey = 0, onStatsChange 
                     <TableRow hover key={item.id}>
                       <TableCell className="dashboard-tx-cell-id">{item.unique_id ?? item.id}</TableCell>
                       <TableCell className="dashboard-tx-guest-name">{item.customer_name ?? '—'}</TableCell>
+                      <TableCell>
+                        <BranchBadge
+                          name={item.location_name}
+                          color={item.branch_color}
+                          textColor={item.branch_color_text}
+                        />
+                      </TableCell>
+                      <TableCell>{item.receptionist_name || '—'}</TableCell>
                       <TableCell>{item.room_name ?? '—'}</TableCell>
                       <TableCell>{item.transaction_type_label ?? '—'}</TableCell>
                       <TableCell align="right" className="dashboard-tx-cell-num">{item.hours ?? '—'}</TableCell>

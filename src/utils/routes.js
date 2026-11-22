@@ -1,4 +1,4 @@
-export const ADMIN_ONLY_PATHS = ['/dashboard', '/settings', '/customers', '/rates', '/beds', '/reservations'];
+export const ADMIN_ONLY_PATHS = ['/dashboard', '/monitoring', '/settings', '/customers', '/rates', '/beds', '/reservations'];
 export const ADMIN_SHARED_PATHS = ['/branches', '/rooms'];
 export const ADMIN_PATHS = [...ADMIN_ONLY_PATHS, ...ADMIN_SHARED_PATHS];
 
@@ -12,6 +12,7 @@ export function isAdminPanelPath(path, isAdmin = false) {
 
 export function getAdminSection(path) {
   if (path === '/dashboard') return 'dashboard';
+  if (path === '/monitoring') return 'monitoring';
   if (path === '/branches') return 'branches';
   if (path === '/rates') return 'rates';
   if (path === '/rooms') return 'rooms';

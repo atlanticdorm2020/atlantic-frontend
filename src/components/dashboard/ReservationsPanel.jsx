@@ -23,6 +23,7 @@ import {
   Typography,
 } from '@mui/material';
 import { apiGet, apiPost } from '../../config/api';
+import { formatDateTimeShort, MANILA_TZ, parseAppDate } from '../../config/resources';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All statuses' },
@@ -41,34 +42,17 @@ function formatMoney(value) {
   })}`;
 }
 
-const MANILA_TZ = 'Asia/Manila';
-
 function formatDateTime(value) {
-  if (!value) return '—';
-
-  try {
-    return new Intl.DateTimeFormat('en-PH', {
-      timeZone: MANILA_TZ,
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    }).format(new Date(value));
-  } catch {
-    return String(value);
-  }
+  return formatDateTimeShort(value);
 }
 
 function formatCheckInParts(value) {
-  if (!value) {
+  const parsed = parseAppDate(value);
+  if (!parsed) {
     return { date: '—', time: '' };
   }
 
   try {
-    const parsed = new Date(value);
-
     return {
       date: new Intl.DateTimeFormat('en-PH', {
         timeZone: MANILA_TZ,

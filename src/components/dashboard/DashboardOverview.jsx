@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { apiGet } from '../../config/api';
+import { formatDate } from '../../config/resources';
 import TransactionsPanel from './TransactionsPanel';
 import TransactionDetailsPanel from './TransactionDetailsPanel';
 import WalkInTransactionsPanel from './WalkInTransactionsPanel';
@@ -82,11 +83,7 @@ export default function DashboardOverview() {
 
   const branchLabel = stats?.location_name || 'Assigned branch';
   const dateLabel = stats?.earnings_date
-    ? new Date(`${stats.earnings_date}T00:00:00`).toLocaleDateString('en-PH', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    })
+    ? formatDate(stats.earnings_date)
     : 'Today';
 
   return (

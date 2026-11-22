@@ -30,7 +30,9 @@ import {
   Typography,
 } from '@mui/material';
 import { apiGet, apiPost, apiPut } from '../../config/api';
+import { formatDateTimeShort } from '../../config/resources';
 import AddTransactionDialog from './AddTransactionDialog';
+import BranchBadge from './BranchBadge';
 import SwitchTransactionDialog from './SwitchTransactionDialog';
 
 function formatMoney(value) {
@@ -48,19 +50,7 @@ function formatDay(value) {
 }
 
 function formatShortDate(value) {
-  if (!value) return '—';
-
-  try {
-    return new Intl.DateTimeFormat('en-PH', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    }).format(new Date(value));
-  } catch {
-    return String(value);
-  }
+  return formatDateTimeShort(value);
 }
 
 function formatCustomerName(name) {
@@ -470,6 +460,8 @@ export default function TransactionsPanel({ onStatsChange }) {
                   <TableRow>
                     <TableCell className="col-sticky-left">ID</TableCell>
                     <TableCell className="col-sticky-left col-customer">Guest</TableCell>
+                    <TableCell>Branch</TableCell>
+                    <TableCell>Receptionist</TableCell>
                     <TableCell>Room / Bed</TableCell>
                     <TableCell align="right">Days</TableCell>
                     <TableCell align="right">Rate</TableCell>
@@ -499,6 +491,14 @@ export default function TransactionsPanel({ onStatsChange }) {
                           <span className="dashboard-tx-overdue-badge">Overdue</span>
                         )}
                       </TableCell>
+                      <TableCell>
+                        <BranchBadge
+                          name={item.location_name}
+                          color={item.branch_color}
+                          textColor={item.branch_color_text}
+                        />
+                      </TableCell>
+                      <TableCell>{item.receptionist_name || '—'}</TableCell>
                       <TableCell>
                         <Typography className="dashboard-tx-room">{item.room_name ?? '—'}</Typography>
                         <Typography className="dashboard-tx-bed">{item.bed_name ?? '—'}</Typography>

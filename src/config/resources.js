@@ -8,17 +8,112 @@ export const yesNoOptions = [
   { value: 0, label: 'No' },
 ];
 
-export function formatDateTime(value) {
-  if (!value) return '—';
+export const MANILA_TZ = 'Asia/Manila';
+
+function withManilaOffset(value) {
+  const raw = String(value).trim();
+
+  if (/[zZ]$/.test(raw) || /[+-]\d{2}:\d{2}$/.test(raw)) {
+    return raw;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+    return `${raw}T00:00:00+08:00`;
+  }
+
+  const normalized = raw.includes('T') ? raw : raw.replace(' ', 'T');
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/.test(normalized)) {
+    return `${normalized}+08:00`;
+  }
+
+  return raw;
+}
+
+export function parseAppDate(value) {
+  if (!value) {
+    return null;
+  }
+
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value;
+  }
+
+  const parsed = new Date(withManilaOffset(value));
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+export function manilaToday() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: MANILA_TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
+}
+
+function formatInManila(value, options) {
+  const date = parseAppDate(value);
+  if (!date) {
+    return value ? String(value) : '—';
+  }
 
   try {
     return new Intl.DateTimeFormat('en-PH', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }).format(new Date(value));
+      timeZone: MANILA_TZ,
+      ...options,
+    }).format(date);
   } catch {
     return String(value);
   }
+}
+
+export function formatDateTime(value) {
+  return formatInManila(value, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+}
+
+export function formatDateTimeShort(value) {
+  return formatInManila(value, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+export function formatDate(value) {
+  return formatInManila(value, {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+export function formatDateTimeNumeric(value) {
+  const date = parseAppDate(value);
+  if (!date) {
+    return value ? String(value) : '—';
+  }
+
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: MANILA_TZ,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(date)
+      .filter((part) => part.type !== 'literal')
+      .map((part) => [part.type, part.value]),
+  );
+
+  return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
 }
 
 export const auditColumns = [
@@ -41,7 +136,14 @@ export const resourceConfigs = {
       },
       { id: 'sirb_no', label: 'SIRB No.', getValue: (item) => item.sirb_no ?? '—' },
       { id: 'mobile_no', label: 'Mobile', getValue: (item) => item.mobile_no ?? '—' },
-      { id: 'branch', label: 'Branch', getValue: (item) => item.location?.name ?? '—' },
+      {
+        id: 'branch',
+        label: 'Branch',
+        type: 'branch',
+        getValue: (item) => item.location?.name ?? '—',
+        getColor: (item) => item.location?.color_hex,
+        getTextColor: (item) => item.location?.color_text,
+      },
       { id: 'rank', label: 'Rank', getValue: (item) => item.rank ?? '—' },
       { id: 'status', label: 'Status', type: 'status', getValue: (item) => item.status },
       ...auditColumns,
@@ -78,6 +180,14 @@ export const resourceConfigs = {
     plural: 'Branches',
     columns: [
       { id: 'name', label: 'Branch', getValue: (item) => item.name },
+      {
+        id: 'color',
+        label: 'Color',
+        type: 'branch',
+        getValue: (item) => item.name,
+        getColor: (item) => item.color_hex || item.color,
+        getTextColor: (item) => item.color_text,
+      },
       { id: 'address', label: 'Address', getValue: (item) => item.address },
       { id: 'rate', label: 'Rate', getValue: (item) => (item.rate?.amount != null ? `₱${item.rate.amount}` : '—') },
       { id: 'status', label: 'Status', type: 'status', getValue: (item) => item.status },
@@ -86,6 +196,7 @@ export const resourceConfigs = {
     fields: [
       { name: 'name', label: 'Branch name', type: 'text', required: true },
       { name: 'address', label: 'Address', type: 'text', required: true },
+      { name: 'color', label: 'Branch color', type: 'color', optional: true },
       { name: 'rate_id', label: 'Rate', type: 'select', optionSource: 'rates', optional: true },
       { name: 'status', label: 'Status', type: 'select', options: statusOptions, required: true },
     ],
@@ -114,7 +225,14 @@ export const resourceConfigs = {
     plural: 'Rooms',
     columns: [
       { id: 'name', label: 'Room', getValue: (item) => item.name },
-      { id: 'branch', label: 'Branch', getValue: (item) => item.location?.name ?? '—' },
+      {
+        id: 'branch',
+        label: 'Branch',
+        type: 'branch',
+        getValue: (item) => item.location?.name ?? '—',
+        getColor: (item) => item.location?.color_hex,
+        getTextColor: (item) => item.location?.color_text,
+      },
       { id: 'rate', label: 'Rate', getValue: (item) => (item.rate?.amount != null ? `₱${item.rate.amount}` : '—') },
       { id: 'bedspace', label: 'Bedspace', getValue: (item) => (item.is_bedspace ? 'Yes' : 'No') },
       { id: 'status', label: 'Status', type: 'status', getValue: (item) => item.status },
@@ -138,7 +256,14 @@ export const resourceConfigs = {
     columns: [
       { id: 'name', label: 'Bed', getValue: (item) => item.name },
       { id: 'room', label: 'Room', getValue: (item) => item.room?.name ?? '—' },
-      { id: 'branch', label: 'Branch', getValue: (item) => item.room?.location?.name ?? '—' },
+      {
+        id: 'branch',
+        label: 'Branch',
+        type: 'branch',
+        getValue: (item) => item.room?.location?.name ?? '—',
+        getColor: (item) => item.room?.location?.color_hex,
+        getTextColor: (item) => item.room?.location?.color_text,
+      },
       { id: 'sort', label: 'Sort', getValue: (item) => item.sort ?? '—' },
       { id: 'status', label: 'Status', type: 'status', getValue: (item) => item.status },
       ...auditColumns,
@@ -185,6 +310,10 @@ export function mapItemToForm(config, item) {
   config.fields.forEach((field) => {
     const value = item?.[field.name];
     values[field.name] = value ?? (field.optional ? '' : values[field.name] ?? '');
+
+    if (field.type === 'color') {
+      values[field.name] = item?.color || item?.color_hex || values[field.name] || '#64748B';
+    }
   });
 
   return values;

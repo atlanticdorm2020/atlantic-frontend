@@ -6,6 +6,7 @@ import {
   MeetingRoomOutlined,
   PaymentsOutlined,
   PeopleOutlined,
+  QueryStatsOutlined,
   SettingsOutlined,
 } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
@@ -22,6 +23,7 @@ const managementItems = [
 export default function DashboardSidebar({ activeSection, mobile = false, onNavigate }) {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
   const dashboardActive = activeSection === 'dashboard' || path === '/dashboard';
+  const monitoringActive = activeSection === 'monitoring' || path === '/monitoring';
   const settingsActive = activeSection === 'settings' || path === '/settings';
   const customersActive = activeSection === 'customers' || path === '/customers';
   const reservationsActive = activeSection === 'reservations' || path === '/reservations';
@@ -48,6 +50,15 @@ export default function DashboardSidebar({ activeSection, mobile = false, onNavi
         >
           <span className="dashboard-sidebar-icon"><DashboardOutlined /></span>
           <span>Dashboard</span>
+        </Box>
+        <Box
+          component="a"
+          href="/monitoring"
+          className={`dashboard-sidebar-link ${monitoringActive ? 'is-active' : ''}`}
+          onClick={onNavigate}
+        >
+          <span className="dashboard-sidebar-icon"><QueryStatsOutlined /></span>
+          <span>Monitoring</span>
         </Box>
         <Box
           component="a"
@@ -105,6 +116,10 @@ export const dashboardSections = {
   dashboard: {
     title: 'Dashboard',
     description: 'Branch stats, earnings, and active transactions for your assigned branch.',
+  },
+  monitoring: {
+    title: 'Receptionist Monitoring',
+    description: 'Track check-ins, missing files and prices, and receptionist duty cut-offs.',
   },
   settings: {
     title: 'Settings',

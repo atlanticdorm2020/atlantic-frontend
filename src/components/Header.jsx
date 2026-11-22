@@ -30,8 +30,9 @@ function Brand({ onClick }) {
 
 function getActiveNavigationLabel(path) {
   if (path === '/') return 'Home';
-  if (path === '/about') return 'Amenities';
-  if (path === '/rooms' || path === '/room') return 'Rooms & Rates';
+  if (path === '/about') return 'About Us';
+  if (path === '/rooms' || path === '/room') return 'Rooms';
+  if (path === '/branches') return 'Branches';
   if (path === '/gallery') return 'Gallery';
   if (path === '/faq' || path === '/faq2') return 'FAQ';
   if (path === '/contacts' || path === '/contacts2') return 'Contacts';
@@ -42,10 +43,7 @@ function Navigation({ mobile = false, onNavigate }) {
   const [expanded, setExpanded] = useState(null);
   const path = window.location.pathname.replace(/\/$/, '') || '/';
   const activeLabel = getActiveNavigationLabel(path);
-  const submenuItems = {
-    'Rooms & Rates': [{ label: 'All Rooms', href: '/rooms' }, { label: 'Bedspace', href: '/rooms' }, { label: 'Solo Room', href: '/rooms' }, { label: 'Couple Room', href: '/rooms' }],
-    Amenities: [{ label: 'About Us', href: '/about' }, { label: 'Branches', href: '/branches' }],
-  };
+  const submenuItems = {};
 
   return (
     <Stack component="nav" className={mobile ? 'mobile-navigation' : 'desktop-navigation'}>

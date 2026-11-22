@@ -72,8 +72,9 @@ export const featuredBranchImages = [
 
 export const navItems = [
   { label: 'Home', href: '/' },
-  { label: 'Rooms & Rates', href: '/rooms', dropdown: true },
-  { label: 'Amenities', href: '/about', dropdown: true },
+  { label: 'About Us', href: '/about' },
+  { label: 'Rooms', href: '/rooms' },
+  { label: 'Branches', href: '/branches' },
   { label: 'Gallery', href: '/gallery' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Contacts', href: '/contacts' },
