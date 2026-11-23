@@ -5,6 +5,7 @@ import HomeSections from './sections/HomeSections';
 import DashboardPage from './sections/DashboardPage';
 import LoginPage from './sections/LoginPage';
 import RegisterPage from './sections/RegisterPage';
+import SeamanLoanPage from './sections/SeamanLoanPage';
 import ReservePage from './sections/ReservePage';
 import AccountPage from './sections/AccountPage';
 import { RoutePage } from './sections/InnerPages';
@@ -28,7 +29,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       {!showAdminPanel && <Header />}
-      {path === '/architecture' ? <ArchitecturePage /> : path === '/register' ? <RegisterPage /> : path === '/login' ? <LoginPage /> : path === '/reserve' ? <ReservePage /> : path === '/account' ? <AccountPage /> : showAdminPanel ? <DashboardPage path={path} /> : innerPaths.includes(path) || isBranchPath ? <RoutePage path={path} /> : <main><HomeSections /></main>}
+      {path === '/architecture' ? <ArchitecturePage /> : path === '/register' ? <RegisterPage /> : path === '/login' ? <LoginPage /> : path === '/seaman-loan' ? <SeamanLoanPage /> : path === '/reserve' ? <ReservePage /> : path === '/account' ? <AccountPage /> : showAdminPanel ? <DashboardPage path={path} /> : innerPaths.includes(path) || isBranchPath ? <RoutePage path={path} /> : <main><HomeSections /></main>}
     </ThemeProvider>
   );
 }

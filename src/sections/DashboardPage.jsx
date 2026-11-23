@@ -14,6 +14,7 @@ import DashboardOverview from '../components/dashboard/DashboardOverview';
 import ResourceCrudPanel from '../components/dashboard/ResourceCrudPanel';
 import MonitoringPanel from '../components/dashboard/MonitoringPanel';
 import ReservationsPanel from '../components/dashboard/ReservationsPanel';
+import SeamanLoansPanel from '../components/dashboard/SeamanLoansPanel';
 import { dashboardSections, getDashboardSection } from '../components/dashboard/DashboardSidebar';
 import { useAuthStore } from '../store/authStore';
 
@@ -83,6 +84,10 @@ function DashboardSectionContent({ section, user }) {
 
   if (section === 'reservations') {
     return <ReservationsPanel />;
+  }
+
+  if (section === 'loans') {
+    return <SeamanLoansPanel />;
   }
 
   if (['branches', 'rates', 'rooms', 'beds', 'customers'].includes(section)) {

@@ -2,6 +2,7 @@ import {
   BedOutlined,
   DashboardOutlined,
   EventAvailableOutlined,
+  AccountBalanceWalletOutlined,
   LocationOnOutlined,
   MeetingRoomOutlined,
   PaymentsOutlined,
@@ -27,6 +28,7 @@ export default function DashboardSidebar({ activeSection, mobile = false, onNavi
   const settingsActive = activeSection === 'settings' || path === '/settings';
   const customersActive = activeSection === 'customers' || path === '/customers';
   const reservationsActive = activeSection === 'reservations' || path === '/reservations';
+  const loansActive = activeSection === 'loans' || path === '/loans';
 
   return (
     <Box component="aside" className={mobile ? 'dashboard-sidebar is-mobile' : 'dashboard-sidebar'}>
@@ -87,6 +89,15 @@ export default function DashboardSidebar({ activeSection, mobile = false, onNavi
           <span className="dashboard-sidebar-icon"><EventAvailableOutlined /></span>
           <span>Reservations</span>
         </Box>
+        <Box
+          component="a"
+          href="/loans"
+          className={`dashboard-sidebar-link ${loansActive ? 'is-active' : ''}`}
+          onClick={onNavigate}
+        >
+          <span className="dashboard-sidebar-icon"><AccountBalanceWalletOutlined /></span>
+          <span>Seaman Loans</span>
+        </Box>
       </Box>
 
       <Box className="dashboard-sidebar-section">
@@ -132,6 +143,10 @@ export const dashboardSections = {
   reservations: {
     title: 'Reservations',
     description: 'Review customer reservation requests and approve or reject them.',
+  },
+  loans: {
+    title: 'Seaman Loans',
+    description: 'Review seaman loan inquiries submitted from the homepage.',
   },
   branches: {
     title: 'Branches',

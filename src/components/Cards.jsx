@@ -47,6 +47,9 @@ export function BranchCard({ branch }) {
 }
 
 export function BusinessCard({ business }) {
+  const href = business.href || '/contacts';
+  const action = business.action || 'Inquire now';
+
   return (
     <Card className="room-card business-card">
       <Box className="card-image-wrap">
@@ -54,10 +57,10 @@ export function BusinessCard({ business }) {
         <Typography className="room-price-badge">{business.category}</Typography>
       </Box>
       <CardContent className="room-card-content">
-        <Typography component="h3" className="card-title">{business.title}</Typography>
+        <Typography component="h3" className="card-title"><a href={href}>{business.title}</a></Typography>
         <Typography className="room-description">{business.description}</Typography>
-        <Button href="/contacts" className="card-action" endIcon={<ArrowForward />}>
-          Inquire now
+        <Button href={href} className="card-action" endIcon={<ArrowForward />}>
+          {action}
         </Button>
       </CardContent>
     </Card>

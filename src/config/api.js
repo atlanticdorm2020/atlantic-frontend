@@ -69,6 +69,16 @@ export async function registerCustomer(payload) {
   return parseResponse(response);
 }
 
+export async function submitSeamanLoan(payload) {
+  const response = await fetch(apiUrl('/api/public/seaman-loan'), {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+
+  return parseResponse(response);
+}
+
 export async function fetchCurrentUser() {
   const response = await fetch(apiUrl('/api/me'), {
     method: 'GET',

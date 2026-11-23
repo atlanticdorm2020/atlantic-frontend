@@ -117,8 +117,10 @@ export const businesses = [
     id: 'seaman-loan',
     title: 'Seaman Loan',
     category: 'Finance',
-    description: 'Quick and practical loan assistance for seafarers who need support between contracts or before joining a vessel.',
+    description: 'Co-terminus loans for officers at 1.99% per month and ratings at 2.5% per month, with a 60-day grace period and releasing as fast as 1 day.',
     image: '/assets/images/businesses/seaman-loan.jpg',
+    href: '/seaman-loan',
+    action: 'Apply now',
   },
   {
     id: 'house-design',
@@ -156,6 +158,48 @@ export const businesses = [
     image: '/assets/images/businesses/document-assistance.jpg',
   },
 ];
+
+export const seamanLoan = {
+  image: '/assets/images/businesses/seaman-loan.jpg',
+  intro: 'Atlantic Seaman Loan is a co-terminus financing option for seafarers who need support before joining a vessel. Apply online or walk in, with no upfront fees and releasing as fast as 1 day.',
+  highlights: [
+    ['Officers', '1.99% per month'],
+    ['Ratings', '2.5% per month'],
+    ['Term', '3 to 12 months, co-terminus'],
+    ['Grace period', '60 days'],
+    ['Releasing', 'As fast as 1 day'],
+    ['Upfront fee', 'None'],
+  ],
+  details: [
+    ['Application', 'Online or walk-in'],
+    ['Payment', 'GCash, bank transfer, or cheque'],
+    ['Coverage', 'Officers and ratings with an active employment contract'],
+  ],
+  requirements: [
+    'Employment contract (DMW)',
+    'Passport and OEC',
+    "Seaman's book",
+    'Embarkation and disembarkation history',
+    'Two valid IDs of the co-borrower',
+    'Proof of relationship',
+    'Latest electric or water bill',
+  ],
+  process: [
+    ['Inquiry', 'Start with an online application or visit a branch to ask about your loanable amount and schedule.'],
+    ['Submit documents and forms', 'Provide the required seafarer documents and complete the loan application details.'],
+    ['Interview', 'A short 5 to 15 minute interview confirms your contract, rank, and repayment plan.'],
+    ['Evaluation', 'Your application is reviewed against the loan term, co-borrower, and supporting documents.'],
+    ['Releasing', 'Approved loans can be released as fast as 1 day, with no upfront fee.'],
+  ],
+  faqs: [
+    ['Who can apply for a seaman loan?', 'Officers and ratings with an employment contract may apply. Officers are offered 1.99% per month and ratings 2.5% per month.'],
+    ['How long is the loan term?', 'The loan is co-terminus with your contract, from 3 to 12 months, and includes a 60-day grace period.'],
+    ['How fast can I receive the funds?', 'Approved applications can be released as fast as 1 day after evaluation.'],
+    ['Is there an upfront fee?', 'No. There is no upfront fee for a seaman loan application.'],
+    ['How do I apply and repay?', 'You can apply online or walk in. Repayment can be made through GCash, bank transfer, or cheque.'],
+    ['What documents do I need?', 'Prepare your DMW employment contract, passport and OEC, seaman’s book, embarkation and disembarkation history, two valid IDs of the co-borrower, proof of relationship, and the latest electric or water bill.'],
+  ],
+};
 
 export const rooms = [
   {

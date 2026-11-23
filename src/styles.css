@@ -731,6 +731,71 @@ img { display: block; max-width: 100%; }
   gap: 24px;
 }
 
+.loan-highlights-section {
+  background: var(--soft);
+}
+
+.loan-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 42px;
+}
+
+.loan-highlight-card {
+  padding: 26px 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.loan-highlight-label {
+  margin: 0 0 8px !important;
+  color: var(--muted);
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.loan-highlight-value {
+  margin: 0 !important;
+  color: var(--heading);
+  font: 800 22px/1.3 'Mulish', Arial, sans-serif !important;
+}
+
+.loan-detail-list {
+  margin-top: 34px;
+}
+
+.loan-detail-list p {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.loan-detail-list strong {
+  display: inline-block;
+  min-width: 110px;
+  color: var(--heading);
+}
+
+.loan-process-section {
+  background: #fff;
+}
+
+.loan-process-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 48px;
+  margin-top: 42px;
+}
+
+.loan-process-list .stage-item:last-child {
+  grid-column: 1 / -1;
+  max-width: 560px;
+}
+
 .dashboard-layout {
   min-height: 100vh;
   background:
@@ -1053,6 +1118,220 @@ img { display: block; max-width: 100%; }
 
 .dashboard-dialog-actions {
   padding: 16px 24px 24px !important;
+}
+
+.loan-inquiry-dialog .MuiDialog-paper {
+  overflow: hidden;
+  border-radius: 16px !important;
+}
+
+.loan-inquiry-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 24px 18px;
+  background: linear-gradient(180deg, #f7f9fc 0%, #fff 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+.loan-inquiry-kicker {
+  margin: 0 0 6px !important;
+  color: var(--muted) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.loan-inquiry-name {
+  margin: 0 !important;
+  color: var(--heading) !important;
+  font: 800 26px/1.2 'Mulish', Arial, sans-serif !important;
+}
+
+.loan-inquiry-meta {
+  margin: 8px 0 0 !important;
+  color: var(--muted) !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.loan-inquiry-content {
+  display: grid;
+  gap: 22px;
+  padding-top: 8px !important;
+}
+
+.loan-inquiry-amount-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.loan-inquiry-amount-grid.is-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.loan-inquiry-amount-card {
+  padding: 16px 18px;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.loan-inquiry-amount-card.is-primary {
+  color: #fff;
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.loan-inquiry-amount-card.is-primary .loan-inquiry-label,
+.loan-inquiry-amount-card.is-primary .loan-inquiry-value {
+  color: #fff !important;
+}
+
+.loan-inquiry-amount-card .loan-inquiry-value {
+  font: 800 22px/1.2 'Mulish', Arial, sans-serif !important;
+}
+
+.loan-inquiry-section {
+  display: grid;
+  gap: 12px;
+}
+
+.loan-inquiry-section-title {
+  margin: 0 !important;
+  color: var(--heading) !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.loan-inquiry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+
+.loan-inquiry-field {
+  min-width: 0;
+}
+
+.loan-inquiry-field.is-wide {
+  grid-column: 1 / -1;
+}
+
+.loan-inquiry-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.loan-inquiry-value,
+.loan-inquiry-value a {
+  color: var(--heading);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.loan-inquiry-value a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.loan-inquiry-value a:hover {
+  text-decoration: underline;
+}
+
+.loan-inquiry-empty {
+  margin: 0 !important;
+  color: var(--muted) !important;
+  font-size: 14px !important;
+}
+
+.loan-inquiry-payments-table {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.loan-inquiry-payment-form {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.loan-inquiry-payment-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.loan-inquiry-payments-table .MuiIconButton-root {
+  color: var(--muted);
+}
+
+.loan-inquiry-payments-table .MuiIconButton-root:hover {
+  color: var(--blue);
+  background: var(--pale-blue);
+}
+
+.loan-inquiry-payments-table .MuiIconButton-root:last-child:hover {
+  color: #b45309;
+  background: #fff7ed;
+}
+
+.loan-inquiry-payments-table tr.is-editing {
+  background: var(--pale-blue);
+}
+
+.loan-inquiry-actions {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 10px !important;
+  justify-content: flex-end;
+  padding: 16px 24px 20px !important;
+  border-top: 1px solid var(--border);
+  background: var(--soft);
+}
+
+.loan-inquiry-actions .MuiButton-root {
+  min-height: 40px !important;
+  padding: 8px 16px !important;
+  border-radius: 10px !important;
+  text-transform: none !important;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 767px) {
+  .loan-inquiry-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .loan-inquiry-amount-grid,
+  .loan-inquiry-amount-grid.is-three,
+  .loan-inquiry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .loan-inquiry-actions {
+    flex-direction: column-reverse;
+  }
+
+  .loan-inquiry-actions .MuiButton-root {
+    width: 100%;
+  }
 }
 
 .dashboard-table-wrap .MuiIconButton-root {
@@ -2824,6 +3103,7 @@ img { display: block; max-width: 100%; }
   .page-title { font-size: 45px !important; }
   .benefit-grid { gap: 20px; }
   .stages-layout, .rules-layout, .faq-layout, .contacts-page-grid, .detail-layout, .branches-map-layout { grid-template-columns: 1fr; gap: 45px; }
+  .loan-highlight-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
    .branch-detail-layout { grid-template-columns: 1fr !important; gap: 45px; }
    .branch-detail-copy { position: static; }
   .about-room-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2867,6 +3147,10 @@ img { display: block; max-width: 100%; }
   .register-success-card { padding: 24px 20px; }
   .register-form-grid { grid-template-columns: 1fr; }
   .register-form-group-title { font-size: 22px !important; }
+  .loan-highlight-grid,
+  .loan-process-list { grid-template-columns: 1fr; }
+  .loan-process-list .stage-item:last-child { max-width: none; }
+  .loan-detail-list strong { display: block; min-width: 0; margin-bottom: 2px; }
   .account-summary-grid { grid-template-columns: 1fr; }
   .account-summary-card-wide { grid-column: auto; }
   .account-panel { padding: 20px 16px; }
